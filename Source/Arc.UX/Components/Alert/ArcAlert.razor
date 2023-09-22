@@ -1,0 +1,26 @@
+﻿@using Arc.UX.Styles
+@inherits ArcComponent
+@inject IComponentStyleProvider ComponentStyleProvider
+
+@if (Visible)
+{
+    <div class="arc-alert @ComponentStyleProvider.Alert(Style) @CssClass">
+        @*@if (Icon.HasValue())
+        {
+            <span class="alert-link @($"{Configuration.IconPrefix}{Icon.ToLower()}")"></span>
+        }*@
+        @ChildContent
+    </div>
+}
+
+@code {
+    // [Parameter]
+    // public string? Icon { get; set; }
+
+    [Parameter]
+    public ElementStyle Style { get; set; } = ElementStyle.Default;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+}

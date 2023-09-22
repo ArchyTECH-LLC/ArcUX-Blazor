@@ -1,0 +1,42 @@
+﻿@inherits ArcComponent
+@using Arc.UX.Components.Icon
+@using Arc.UX.Styles
+
+
+@inject IComponentStyleProvider ComponentStyleProvider
+@if (Visible)
+{
+    <table class="arc-message-box @ComponentStyleProvider.Style(Style) @CssClass">
+        <tr>
+            <td class="arc-message-box-banner">
+                <ArcIcon IconName=@IconName Design=@IconDesign Animation=@IconAnimation />
+            </td>
+            <td class="arc-message-box-content">
+                <div class="arc-message-box-message">
+                    @ChildContent
+                </div>
+            </td>
+        </tr>
+    </table>
+}
+
+@code {
+
+    [Parameter]
+    public string? IconName { get; set; }
+
+    [Parameter]
+    public string? IconDesign { get; set; } //= FontAwesomeDesign.Solid;
+    // public FontAwesomeDesign IconDesign { get; set; } = FontAwesomeDesign.Solid;
+
+    [Parameter]
+    public string? IconAnimation { get; set; }
+    // public FontAwesomeAnimation? IconAnimation { get; set; }
+
+    [Parameter]
+    public ElementStyle Style { get; set; } = ElementStyle.Default;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+}

@@ -1,0 +1,79 @@
+﻿.arc-message-box {
+    width: 100%;
+    border-radius: 5px;
+    border-collapse: initial;
+    border-spacing: 0;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.arc-message-box-content {
+    padding: 8px 10px;
+    align-items: center;
+    display: flex;
+}
+
+.arc-message-box-message {
+    flex-grow: 1;
+}
+
+.arc-message-box-actions {
+    flex-shrink: 0;
+    margin-left: 15px;
+}
+
+.arc-message-box-banner {
+    color: #fff;
+    width: 42px;
+    font-size: 1.5rem;
+    padding: 0;
+    text-align: center;
+}
+
+.arc-message-box-banner ::deep i {
+        color: #fff !important;
+    }
+
+.arc-message-box-banner {
+    background-color: #004085;
+    font-size: 1.5rem;
+    width: 42px;
+    text-align: center;
+    padding: 0;
+}
+
+table.primary.arc-message-box {
+    border: 1px solid #004085;
+    background-color: #e6f2ff;
+}
+
+.primary td.arc-message-box-banner {
+    background-color: #004085;
+}
+
+table.info.arc-message-box {
+    border: 1px solid #004085;
+    background-color: #e6f2ff;
+}
+
+.info td.arc-message-box-banner {
+    background-color: #004085;
+}
+
+.success.arc-message-box {
+    border: 1px solid #28a745;
+    background-color: #eafaee;
+}
+
+.success .arc-message-box-banner {
+    background-color: #28a745;
+}
+
+.danger.arc-message-box {
+    border: 1px solid #ff6600;
+    background-color: #ffefe6;
+}
+
+.danger .arc-message-box-banner {
+    background-color: #ff6600;
+}
