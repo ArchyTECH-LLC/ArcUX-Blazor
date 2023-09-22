@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "font-awesome@6.1.1",
+      "destination": "wwwroot/libs/font-awesome/"
+    },
+    {
+      "library": "bootstrap@5.1.0",
+      "destination": "wwwroot/libs/bootstrap/"
+    }
+  ]
+}
