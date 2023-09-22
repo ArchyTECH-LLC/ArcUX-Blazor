@@ -4,14 +4,14 @@
 @inject IIconStyleProvider IconStyleProvider
 @inject IComponentStyleProvider ComponentStyleProvider
 
-@if (string.IsNullOrEmpty(IconName) == false)
+@if (string.IsNullOrEmpty(Name) == false)
 {
-    <i class="arc-icon @ComponentStyleProvider.Text(Style) @IconStyleProvider.Icon(IconName, IconDesign, IconAnimation) @CssClass" title=@Title></i>
+    <i class="arc-icon @ComponentStyleProvider.Text(Style) @IconStyleProvider.Icon(Name, Design, Animation) @CssClass" title=@Title></i>
 }
 
 @code {
     [Parameter]
-    public string? IconName { get; set; }
+    public string? Name { get; set; }
     [Parameter]
     public string? Title { get; set; }
 
@@ -19,11 +19,11 @@
     public bool Solid { get; set; } = true;
 
     [Parameter]
-    public string? IconDesign { get; set; }
+    public string? Design { get; set; }
     // public FontAwesomeDesign Design { get; set; } = FontAwesomeDesign.Solid;
 
     [Parameter]
-    public string? IconAnimation { get; set; }
+    public string? Animation { get; set; }
     // public FontAwesomeAnimation? Animation { get; set; }
     
     [Parameter]

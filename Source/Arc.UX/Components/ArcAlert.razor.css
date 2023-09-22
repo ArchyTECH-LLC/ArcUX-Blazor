@@ -1,0 +1,52 @@
+﻿.alert {
+    border: 0;
+    border-left: 32px solid;
+    border-radius: 0;
+}
+
+.alert-success {
+    border-left: 16px solid #3d9b35;
+}
+
+
+.alert-critical {
+    border-left-color: #840000;
+    background: rgba(290, 0, 0, 0.25)
+}
+
+.alert-danger, .panel-danger .panel-heading {
+    border-radius: 0;
+    border: 0;
+    background: rgba(255, 102, 0, 0.5);
+    border-left: 32px solid #ff6600;
+    color: black;
+}
+
+.alert-popover {
+    border-left: 32px solid #ff6600;
+    background-color: rgb(254, 178, 128);
+    color: black;
+}
+
+.alert-popover.popover.top .arrow:after {
+    border-top-color: rgb(254, 178, 128);
+}
+
+.alert-warning {
+    border-left-color: #f0ad4e;
+    color: black;
+}
+
+.alert-info {
+    border-left-color: #5bc0de;
+    color: black;
+}
+
+
+.alert-warning, .alert-danger, .alert-error {
+    -webkit-animation: flash 1s;
+    -moz-animation: flash 1s;
+    -ms-animation: flash 1s;
+    -o-animation: flash 1s;
+    animation: flash 1s;
+}

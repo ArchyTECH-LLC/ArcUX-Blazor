@@ -8,10 +8,18 @@
     <table class="arc-message-box @ComponentStyleProvider.Style(Style) @CssClass">
         <tr>
             <td class="arc-message-box-banner">
-                <ArcIcon IconName=@IconName Design=@IconDesign Animation=@IconAnimation />
+                <ArcIcon Name=@IconName Design=@IconDesign Animation=@IconAnimation />
             </td>
             <td class="arc-message-box-content">
+
                 <div class="arc-message-box-message">
+                    @if (string.IsNullOrEmpty(Title) == false)
+                    {
+                        <div class="arc-message-box-title">
+                            @Title
+                        </div>
+                    }
+
                     @ChildContent
                 </div>
             </td>
@@ -22,11 +30,14 @@
 @code {
 
     [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
     public string? IconName { get; set; }
 
     [Parameter]
     public string? IconDesign { get; set; } //= FontAwesomeDesign.Solid;
-    // public FontAwesomeDesign IconDesign { get; set; } = FontAwesomeDesign.Solid;
+                                            // public FontAwesomeDesign IconDesign { get; set; } = FontAwesomeDesign.Solid;
 
     [Parameter]
     public string? IconAnimation { get; set; }
