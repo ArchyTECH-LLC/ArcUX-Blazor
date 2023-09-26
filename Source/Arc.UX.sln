@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arc.UX", "Arc.UX\Arc.UX.csproj", "{26CEDEAD-6956-4015-AE84-EB8F1C671127}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arc.Demo", "..\Demo\Arc.Demo\Arc.Demo.csproj", "{48440F20-9789-4E9C-A548-E6829CC62264}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arc.Demo", "..\Demo\Arc.Demo\Arc.Demo.csproj", "{48440F20-9789-4E9C-A548-E6829CC62264}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

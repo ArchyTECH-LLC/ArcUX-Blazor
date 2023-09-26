@@ -1,0 +1,24 @@
+﻿<ArcMessageBox Style="@ElementStyle.Primary" IconName="hourglass" Visible="@IsLoading">
+    @LoadingMessage
+</ArcMessageBox>
+
+@if (Visible && IsLoading == false)
+{
+    @ChildContent
+}
+
+@code {
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string LoadingMessage { get; set; } = "Loading...";
+
+    [Parameter]
+    public bool IsLoading { get; set; }
+
+    [Parameter]
+    public bool Visible { get; set; } = true;
+
+}
