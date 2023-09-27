@@ -4,7 +4,7 @@
 @inject IIconStyleProvider IconStyleProvider
 @inject IComponentStyleProvider ComponentStyleProvider
 
-@if (string.IsNullOrEmpty(Name) == false)
+@if (Name.HasValue())
 {
     <i class="arc-icon @ComponentStyleProvider.Text(Style) @IconStyleProvider.Icon(Name, Design, Animation) @CssClass" title=@Title></i>
 }

@@ -1,4 +1,4 @@
-﻿using Arc.UX.Styles;
+﻿using ArchyTECH.Core.Extensions;
 
 namespace Arc.UX.Styles.Defaults;
 
@@ -9,7 +9,7 @@ public class FontAwesomeIconStyleProvider : IIconStyleProvider
         if (iconName == null) return null;
 
         var design = iconDesign?.ToLower() ?? "fa-solid";
-        var animation = string.IsNullOrEmpty(iconAnimation) ? null : $" fa-{iconAnimation.ToLower()}";
+        var animation = iconAnimation.HasValue() ? null : $" fa-{iconAnimation.ToLower()}";
         return $"fa-{iconName.ToLower()} {design} {animation}";
     }
 }
