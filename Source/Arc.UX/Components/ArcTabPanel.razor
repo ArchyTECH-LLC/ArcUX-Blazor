@@ -1,0 +1,46 @@
+﻿@inherits ArcComponent
+
+@if (Visible)
+{
+    <div class="arc-tab-panel @CssClass">
+
+        <CascadingValue Value="this">
+            <ul class="nav nav-tabs">
+                @ChildContent
+            </ul>
+        </CascadingValue>
+
+        <div class="arc-tab-content">
+            @SelectedTab?.ChildContent
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    public List<ArcTab> Tabs { get; } = new();
+
+    public ArcTab? SelectedTab { get; set; }
+
+    internal void AddPage(ArcTab tab)
+    {
+        Tabs.Add(tab);
+        if (SelectedTab == null && tab.Visible)
+            SelectTab(tab);
+    }
+
+    public void SelectTab(ArcTab tab)
+    {
+        if (SelectedTab == tab) return;
+
+        SelectedTab?.SetTabSelection(false);
+
+        tab.SetTabSelection(true);
+        SelectedTab = tab;
+
+        StateHasChanged();
+    }
+}
