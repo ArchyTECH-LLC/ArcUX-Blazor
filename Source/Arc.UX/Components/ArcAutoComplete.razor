@@ -40,7 +40,7 @@
     public Func<TItem, string> ItemText { get; set; } = _ => string.Empty;
 
     [Parameter]
-    public Func<TItem, TValue?> ItemValue { get; set; } = _ => default;
+    public Func<TItem, TValue>? ItemValue { get; set; }
 
     [Parameter]
     public Expression<Func<TValue>>? ValidationProperty { get; set; }

@@ -1,5 +1,4 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms
-@using System.ComponentModel
 
 @inherits InputBase<List<TValue>>
 @typeparam TValue
@@ -15,7 +14,7 @@
         </span>
     }
 
-    <DpiAutoComplete @ref="AutoComplete"
+    <ArcAutoComplete @ref="AutoComplete"
                      @bind-Value="LastValue"
                      Id="@Id"
                      Items="UnselectedItems"
@@ -37,20 +36,17 @@
     [Parameter]
     public Func<TItem, string?> ItemText { get; set; } = _ => null;
 
-    [CascadingParameter]
-    public EditContext? EditContext { get; set; }
-
 
     [Parameter]
-    public Func<TItem, TValue?> ItemValue { get; set; } = _ => default;
+    public Func<TItem, TValue> ItemValue { get; set; } = _ => default!;
 
     [Parameter]
     public IEnumerable<TItem> Items { get; set; } = new List<TItem>();
 
     protected TValue? LastValue { get; set; }
 
-    List<TItem> SelectedItems { get; set; } = new List<TItem>();
-    List<TItem> UnselectedItems { get; set; } = new List<TItem>();
+    List<TItem> SelectedItems { get; set; } = new();
+    List<TItem> UnselectedItems { get; set; } = new();
 
     [Parameter]
     public bool AllowNoSelection { get; set; } = true;
@@ -67,18 +63,18 @@
     [Parameter]
     public EventCallback FocusLost { get; set; }
 
-    DpiAutoComplete<TItem, TValue> AutoComplete { get; set; }
+    ArcAutoComplete<TItem, TValue> AutoComplete { get; set; } = null!;
 
     protected override void OnParametersSet()
     {
         Value ??= new();
 
         SelectedItems = Items
-            .Where(item => Value.Any(selectedValue => selectedValue.Equals(ItemValue(item))))
+            .Where(item => Value.Any(selectedValue => selectedValue!.Equals(ItemValue(item))))
             .ToList();
 
         UnselectedItems = Items
-            .Where(item => Value.Any(selectedValue => selectedValue.Equals(ItemValue(item))) == false)
+            .Where(item => Value.Any(selectedValue => selectedValue!.Equals(ItemValue(item))) == false)
             .ToList();
     }
 
@@ -89,7 +85,7 @@
         SelectedItems.Add(item);
         UnselectedItems.Remove(item);
         var value = ItemValue(item);
-        CurrentValue.Add(value);
+        CurrentValue!.Add(value);
         await AutoComplete.Clear();
 
         _ = ValueChanged.InvokeAsync(Value);
@@ -104,34 +100,36 @@
         SelectedItems.Remove(item);
 
         var value = ItemValue(item);
-        CurrentValue.Remove(value);
+        CurrentValue!.Remove(value);
 
         _ = ValueChanged.InvokeAsync(Value);
         EditContext.NotifyFieldChanged(FieldIdentifier);
     }
 
-    protected override bool TryParseValueFromString(string values, out List<TValue> result, out string validationErrorMessage)
+    protected override bool TryParseValueFromString(string? values, out List<TValue> results, out string validationErrorMessage)
     {
-        try
+        validationErrorMessage = string.Empty;
+        if (values == null)
         {
-            result = new List<TValue>();
-
-            foreach (var value in values.Split(","))
-            {
-                var converter = TypeDescriptor.GetConverter(typeof(TValue));
-
-                result.Add((TValue)converter.ConvertFromString(value));
-            }
-
-            validationErrorMessage = null;
+            results = new List<TValue>();
             return true;
         }
-        catch (NotSupportedException)
+
+        results = new List<TValue>();
+
+        foreach (var value in values.Split(","))
         {
-            result = default;
-            validationErrorMessage = $"Unable to parse type {typeof(TValue).Name}";
-            return false;
+            var parsed = value.TryParse(out TValue parsedValue);
+            if (parsed == false)
+            {
+                validationErrorMessage = $"Unable to parse type {typeof(TValue).Name}";
+                return false;
+            }
+
+            results.Add(parsedValue!);
         }
+
+        return true;
     }
 
     private void OnFocusLost()
