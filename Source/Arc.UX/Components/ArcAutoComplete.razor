@@ -1,0 +1,264 @@
+﻿@typeparam TItem
+@using System.Text.RegularExpressions
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Linq.Expressions
+
+@typeparam TValue
+@inherits InputBase<TValue>
+
+<div class="arc-autocomplete @CssClass @Css" style="position: relative">
+
+    <InputText placeholder="@DefaultText"
+               id="@Id"
+               class="form-select arc-dropdown"
+               disabled="@Disabled"
+               @bind-Value="Text"
+               @oninput="OnTextChange"
+               @onfocus="OnFocus"
+               @onkeydown="OnKeyPress"
+               @onblur="OnBlur" />
+
+    @if (Show)
+    {
+        <div class="dropdown-menu show" x-placement="top-start" style="position: absolute; max-height: 300px; overflow-y: auto">
+
+            @for (int i = 0; i < FilteredItems.Count; i++)
+            {
+                var index = i;
+                var item = FilteredItems[index];
+                <a class="dropdown-item @(Equals(FocusedItem, item) ? "focused" : "")" @onclick="() =>  SelectItem(item, index)">@(ItemText(item))</a>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter]
+    public Func<TItem, string> ItemText { get; set; } = _ => string.Empty;
+
+    [Parameter]
+    public Func<TItem, TValue?> ItemValue { get; set; } = _ => default;
+
+    [Parameter]
+    public Expression<Func<TValue>>? ValidationProperty { get; set; }
+
+    [Parameter]
+    public Action<TItem> ItemSelected { get; set; } = _ => { };
+
+    [Parameter]
+    public Func<string?, Task<List<TItem>>>? OnSearch { get; set; }
+
+    [Parameter]
+    public string? DefaultText { get; set; }
+
+    [Parameter]
+    public IEnumerable<TItem> Items { get; set; } = new List<TItem>();
+
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public string? Css { get; set; }
+
+    [Parameter]
+    public EventCallback<string> TextChanged { get; set; }
+
+    [Parameter]
+    public EventCallback FocusLost { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public int MinLength { get; set; } = 1;
+
+    public List<TItem> FilteredItems { get; set; } = new();
+
+
+    protected int FocusedIndex { get; set; } = -1;
+    public TItem? SelectedItem { get; set; }
+
+    public TItem? FocusedItem =>
+    FocusedIndex < 0
+    ? default
+    :
+        FilteredItems
+        .Skip(FocusedIndex)
+        .Take(1)
+        .FirstOrDefault();
+
+
+    private bool IgnoreTextChange { get; set; }
+
+    protected bool Show { get; set; }
+
+    protected override void OnInitialized()
+    {
+        OnSearch ??= DefaultSearch;
+    }
+
+    private async Task OnTextChange(ChangeEventArgs arg)
+    {
+        if (IgnoreTextChange) return;
+        Show = true;
+        var text = (string?)arg.Value ?? "";
+
+        if (text.Length < MinLength && Items.Any() == false)
+        {
+            FocusedIndex = -1;
+            return;
+        }
+        FocusedIndex = 0;
+        FilteredItems = await OnSearch!(text);
+    }
+
+
+    private async Task RequireMenu()
+    {
+        if (Show == false)
+        {
+            Show = true;
+            FilteredItems = await OnSearch!(Text);
+        }
+    }
+
+    private async Task OnKeyPress(KeyboardEventArgs args)
+    {
+        IgnoreTextChange = false;
+        switch (args.Key)
+        {
+
+            case "ArrowUp":
+                await RequireMenu();
+                FocusedIndex = Math.Max(0, FocusedIndex - 1);
+                break;
+            case "ArrowDown":
+                await RequireMenu();
+                FocusedIndex = Math.Min(FilteredItems.Count(), FocusedIndex + 1);
+                break;
+            //case "Tab":
+            case "Enter":
+
+                if (Show == false)
+                {
+                    await RequireMenu();
+                    return;
+                }
+
+                if (FocusedItem != null) await SelectItem(FocusedItem, 0);
+                Show = false;
+
+                break;
+            case "Backspace":
+                await Clear();
+                FilteredItems = await OnSearch!("");
+                Show = true;
+                IgnoreTextChange = true;
+                break;
+            case "Escape":
+                await Clear();
+                Show = false;
+                IgnoreTextChange = true;
+                break;
+        }
+    }
+
+
+
+    protected override bool TryParseValueFromString(string? value, out TValue result, out string validationErrorMessage)
+    {
+        // try
+        // {
+        // var converter = TypeDescriptor.GetConverter(typeof(TValue));
+        // result = (TValue)converter.ConvertFromString(value);
+        var parsed = value.TryParse(out result!);
+        validationErrorMessage =
+            parsed
+                ? String.Empty
+                : $"Unable to parse type {typeof(TValue).Name}";
+        return parsed;
+        // }
+        // catch (NotSupportedException)
+        // {
+        //     result = default;
+        //     validationErrorMessage = $"Unable to parse type {typeof(TValue).Name}";
+        //     return false;
+        // }
+    }
+
+    private Task<List<TItem>> DefaultSearch(string? text)
+    {
+        text ??= "";
+
+        var results = Items
+            .WhereIf(text.HasValue(),
+                item => Regex.IsMatch(ItemText(item), $"(^|\\s+|\\-){text}", RegexOptions.IgnoreCase))
+            .ToList();
+
+        return Task.FromResult(results);
+    }
+
+    private async Task SelectItem(TItem item, int? index = null)
+    {
+        Show = false;
+        SelectedItem = item;
+        if (index.HasValue) FocusedIndex = index.Value;
+        if (item != null)
+        {
+            await SetTextAsync(ItemText(item));
+            CurrentValue = ItemValue(item);
+        }
+        else
+        {
+            await Clear();
+        }
+
+        ItemSelected(item);
+    }
+
+    public async Task Clear()
+    {
+        await SetTextAsync(null);
+        CurrentValue = default;
+        SelectedItem = default;
+        FocusedIndex = -1;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task SetTextAsync(string? value)
+    {
+        if (Text == value) return;
+        Text = value;
+        await TextChanged.InvokeAsync(Text);
+    }
+
+    private async Task OnBlur(FocusEventArgs obj)
+    {
+        await Task.Delay(TimeSpan.FromMilliseconds(200));
+
+        if (FocusedIndex >= 0 && FocusedItem != null)
+        {
+            await SelectItem(FocusedItem);
+        }
+
+        Show = false;
+
+        await FocusLost.InvokeAsync();
+    }
+
+    private async Task OnFocus(FocusEventArgs obj)
+    {
+        if (Items.Any() || MinLength == 0)
+        {
+            Show = true;
+            FilteredItems = await OnSearch!(Text);
+            //FocusedIndex = 0;
+        }
+    }
+
+
+}
