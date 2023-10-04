@@ -1,0 +1,121 @@
+﻿
+@inject NavigationManager NavigationManager;
+
+
+@if (Visible)
+{
+    <button 
+        class="@(GetStyles())" 
+        type="@Type"
+        disabled="@(Disabled)"
+        title="@Title"
+        @onclick="HandleClick">
+
+        @if (Icon.HasValue())
+        {
+            @if (ChildContent != null)
+            {
+                <ArcIcon IconName=@Icon Design=@IconDesign Animation=@IconAnimation Style=@null CssClass="me-2" />
+            }
+            else
+            {
+                <ArcIcon IconName=@Icon Design=@IconDesign Animation=@IconAnimation Style=@null />
+            }
+        }
+        @ChildContent
+    </button>
+}
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public string? IconDesign { get; set; }
+
+    [Parameter]
+    public string? IconAnimation { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public ButtonType Type { get; set; } = ButtonType.Button;
+
+    [Parameter]
+    public ElementStyle Style { get; set; } = ElementStyle.Primary;
+
+    [Parameter]
+    public ElementSize Size { get; set; } = ElementSize.Default;
+
+    [Parameter]
+    public bool Solid { get; set; }
+
+    [Parameter]
+    public bool Block { get; set; }
+
+    [Parameter]
+    public bool Visible { get; set; } = true;
+
+    [Parameter]
+    [Obsolete("The default style is now outline, please use the Solid property make solid buttons")]
+    public bool Outline
+    {
+        get => !Solid;
+        set => Solid = !value;
+    }
+
+    [Parameter]
+    public string? NavigationPath { get; set; }
+
+    [Parameter]
+    public bool Active { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    private string GetStyles()
+    {
+        var outlinedStyleDefaults = new[]
+        {
+            ElementStyle.Hero,
+            ElementStyle.Primary,
+            ElementStyle.Default,
+            ElementStyle.Success,
+            ElementStyle.Error,
+            ElementStyle.Warning,
+            ElementStyle.Info,
+        };
+
+        var outline =
+            Solid == false && outlinedStyleDefaults.Contains(Style)
+                ? "outline-"
+                : string.Empty;
+
+        var style = $"btn btn-{outline}{Style.ToString().ToLower()} ";
+
+
+        if (Size == ElementSize.Small) style += "btn-sm ";
+        if (Size == ElementSize.Large) style += "btn-lg ";
+
+        if (Block) style += "w-100 ";
+        if (Active)
+            style += "active ";
+
+        return style;
+    }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; } //=  (args) => Task.CompletedTask;
+
+
+    private async Task HandleClick(MouseEventArgs args)
+    {
+        if (NavigationPath != null) NavigationManager.NavigateTo(NavigationPath);
+
+        await OnClick.InvokeAsync(args);
+    }
+}

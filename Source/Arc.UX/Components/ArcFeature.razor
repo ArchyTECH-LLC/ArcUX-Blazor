@@ -1,0 +1,23 @@
+﻿@if (Enabled)
+{
+    @ChildContent
+}
+else if(DisabledMessage.HasValue())
+{
+    <ArcAlert Style="@ElementStyle.Info">
+        @DisabledMessage
+    </ArcAlert>
+}
+
+@code {
+
+    [Parameter]
+    public bool Enabled { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    
+    [Parameter]
+    public string DisabledMessage { get; set; }
+
+}

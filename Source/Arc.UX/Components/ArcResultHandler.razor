@@ -1,0 +1,61 @@
+﻿
+
+@if (Result != null)
+{
+    if (Result.Success)
+    {
+        if (Success != null)
+        {
+            @Success
+        }
+        else if (ShowSuccess)
+        {
+            <ArcMessageBox Title="Result.Title" IconName="circle-check" Style="@ElementStyle.Success" Visible="HasContent">
+             
+                @if (Result.Message.HasValue())
+                {
+                    <pre class="result-message">@Result.Message</pre>
+                }
+            </ArcMessageBox>
+        }
+    }
+    else
+    {
+
+        if (Failure != null)
+        {
+            @Failure
+        }
+        else if (ShowFailure)
+        {
+            <ArcMessageBox Title="@Result.Title" IconName="triangle-exclamation" Style="@ElementStyle.Error" Visible="HasContent">
+                @if (Result.Message.HasValue())
+                {
+                    <pre class="result-message">@Result.Message</pre>
+                }
+            </ArcMessageBox>
+        }
+    }
+}
+
+@code {
+    [Parameter]
+    public Result? Result { get; set; }
+
+    [Parameter]
+    public RenderFragment? Success { get; set; }
+
+    [Parameter]
+    public bool ShowSuccess { get; set; } = true;
+
+    [Parameter]
+    public RenderFragment? Failure { get; set; }
+
+    [Parameter]
+    public bool ShowFailure { get; set; } = true;
+
+
+    protected bool HasContent => (Result?.Title?.HasValue() ?? false)
+                                 || (Result?.Message?.HasValue() ?? false);
+
+}

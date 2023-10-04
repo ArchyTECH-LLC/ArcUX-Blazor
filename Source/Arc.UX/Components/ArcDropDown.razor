@@ -1,0 +1,116 @@
+﻿@using Microsoft.AspNetCore.Components.Forms;
+@using System.Linq.Expressions;
+
+@typeparam TItem
+@typeparam TValue
+@inherits InputSelect<TValue> 
+
+@if (Visible)
+{
+    <InputSelect Value="Value"
+                 ValueChanged="(async (TValue v) => {
+                await ValueChanged.InvokeAsync(v);
+                await OnChangeEvent(v);})"
+                 ValueExpression="ValueExpression"
+                 id="@Id"
+                 class=@($"arc-dropdown {GetStyle()}")
+                 disabled="@Disabled"
+    @onblur="HandleOnBlurAsync">
+        @if (DefaultText.HasValue())
+        {
+            <option value="@("")" selected="@(CurrentValue == null)">@DefaultText</option>
+        }
+
+        @foreach (var item in Items)
+        {
+            <option value="@StringValue(item)" selected="@(StringValue(item) == CurrentValue?.ToString())">@ItemText(item)</option>
+        }
+    </InputSelect>
+}
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter]
+    public Func<TItem, string?> ItemText { get; set; } = _ => null;
+
+    [Parameter]
+    public Expression<Func<TValue>>? ValidationProperty { get; set; }
+
+
+    [Parameter]
+    public Func<TItem, TValue?> ItemValue { get; set; } = _ => default;
+
+    private string? StringValue(TItem item) => ItemValue(item)?.ToString();
+
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public string DefaultText { get; set; } = "Please select...";
+
+    [Parameter]
+    public ElementSize Size { get; set; } = ElementSize.Default;
+
+    [Parameter]
+    public EventCallback<TItem> ItemSelected { get; set; }
+
+    [Parameter]
+    public IEnumerable<TItem> Items { get; set; } = new List<TItem>();
+
+    [Parameter]
+    public EventCallback FocusLost { get; set; }
+
+    [Parameter]
+    public bool Visible { get; set; } = true;
+
+    private string GetStyle()
+    {
+        var classes = "form-control form-select ";
+        classes += Value == null ? "is-null " : "has-value ";
+        if (Size == ElementSize.Large) classes += "btn-lg";
+        if (Size == ElementSize.Small) classes += "btn-sm";
+
+        return $"{classes} {CssClass}";
+    }
+
+    private async Task OnChangeEvent(TValue value)
+    {
+        //var value = Parseable.ParseOrNull<TValue>(args.Value?.ToString());
+        CurrentValue = value;
+        //await this.ValueChanged.InvokeAsync(value);
+
+        var item = CurrentValue != null ? Items.FirstOrDefault(i => ItemValue(i)?.Equals(value) == true) : default;
+        await ItemSelected.InvokeAsync(item);
+
+        //EditContext.NotifyFieldChanged(FieldIdentifier);
+        //await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task Clear()
+    {
+        CurrentValue = default;
+        EditContext.NotifyFieldChanged(FieldIdentifier);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    protected override bool TryParseValueFromString(string? value, out TValue result, out string validationErrorMessage)
+    {
+        result = value.ParseOrNull<TValue>()!;
+        validationErrorMessage = null!;
+        return true;
+    }
+
+    protected async Task HandleOnBlurAsync()
+    {
+        if (string.IsNullOrEmpty(CurrentValue?.ToString()))
+        {
+            EditContext.NotifyFieldChanged(FieldIdentifier);
+        }
+
+        await FocusLost.InvokeAsync();
+    }
+
+}

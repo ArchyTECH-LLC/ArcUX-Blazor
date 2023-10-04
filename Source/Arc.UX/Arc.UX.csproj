@@ -21,9 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="archyTECH.Core" Version="0.1.0-prerelease" />
-    <PackageReference Include="FluentValidation" Version="11.5.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.10" />
+    <PackageReference Include="archyTECH.Core" Version="0.10.0-prerelease" />
+    <PackageReference Include="FluentValidation" Version="11.7.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.11" />
   </ItemGroup>
 
   <ItemGroup>

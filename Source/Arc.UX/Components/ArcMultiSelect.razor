@@ -1,0 +1,139 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+
+@inherits InputBase<List<TValue>>
+@typeparam TValue
+@typeparam TItem
+
+
+<div class="form-control arc-multiselect @(Disabled ? "disabled" : "") @CssClass">
+    @foreach (var selectedItem in SelectedItems)
+    {
+        <span class="badge rounded-pill bg-primary m-1 p-2 fs-6" @onclick="() => Unselect(selectedItem)">
+            @(ItemText(selectedItem))
+            <ArcIcon IconName="times-circle" CssClass="ms-1 me-1" Style=@null />
+        </span>
+    }
+
+    <ArcAutoComplete @ref="AutoComplete"
+                     @bind-Value="LastValue"
+                     Id="@Id"
+                     Items="UnselectedItems"
+                     DefaultText="@DefaultText"
+                     Disabled="Disabled"
+                     ItemText="ItemText"
+                     ItemValue="item => ItemValue(item)"
+                     ItemSelected="async item => await SelectItem(item)"
+                     Css="@CssClass"
+                     FocusLost="OnFocusLost" />
+
+</div>
+
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter]
+    public Func<TItem, string?> ItemText { get; set; } = _ => null;
+
+
+    [Parameter]
+    public Func<TItem, TValue> ItemValue { get; set; } = _ => default!;
+
+    [Parameter]
+    public IEnumerable<TItem> Items { get; set; } = new List<TItem>();
+
+    protected TValue? LastValue { get; set; }
+
+    List<TItem> SelectedItems { get; set; } = new();
+    List<TItem> UnselectedItems { get; set; } = new();
+
+    [Parameter]
+    public bool AllowNoSelection { get; set; } = true;
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public string DefaultText { get; set; } = "Add item...";
+
+    //[Parameter]
+    //public EventCallback<object> OnChange { get; set; }
+
+    [Parameter]
+    public EventCallback FocusLost { get; set; }
+
+    ArcAutoComplete<TItem, TValue> AutoComplete { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        Value ??= new();
+
+        SelectedItems = Items
+            .Where(item => Value.Any(selectedValue => selectedValue!.Equals(ItemValue(item))))
+            .ToList();
+
+        UnselectedItems = Items
+            .Where(item => Value.Any(selectedValue => selectedValue!.Equals(ItemValue(item))) == false)
+            .ToList();
+    }
+
+    public async Task SelectItem(TItem item)
+    {
+        if (Equals(item, default(TItem))) return;
+
+        SelectedItems.Add(item);
+        UnselectedItems.Remove(item);
+        var value = ItemValue(item);
+        CurrentValue!.Add(value);
+        await AutoComplete.Clear();
+
+        _ = ValueChanged.InvokeAsync(Value);
+        EditContext.NotifyFieldChanged(FieldIdentifier);
+    }
+
+    private void Unselect(TItem item)
+    {
+        if (Disabled) return;
+
+        UnselectedItems.Add(item);
+        SelectedItems.Remove(item);
+
+        var value = ItemValue(item);
+        CurrentValue!.Remove(value);
+
+        _ = ValueChanged.InvokeAsync(Value);
+        EditContext.NotifyFieldChanged(FieldIdentifier);
+    }
+
+    protected override bool TryParseValueFromString(string? values, out List<TValue> results, out string validationErrorMessage)
+    {
+        validationErrorMessage = string.Empty;
+        if (values == null)
+        {
+            results = new List<TValue>();
+            return true;
+        }
+
+        results = new List<TValue>();
+
+        foreach (var value in values.Split(","))
+        {
+            var parsed = value.TryParse(out TValue parsedValue);
+            if (parsed == false)
+            {
+                validationErrorMessage = $"Unable to parse type {typeof(TValue).Name}";
+                return false;
+            }
+
+            results.Add(parsedValue!);
+        }
+
+        return true;
+    }
+
+    private void OnFocusLost()
+    {
+        FocusLost.InvokeAsync();
+    }
+}
