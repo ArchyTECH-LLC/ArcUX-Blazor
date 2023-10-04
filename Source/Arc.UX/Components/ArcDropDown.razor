@@ -13,7 +13,7 @@
                 await OnChangeEvent(v);})"
                  ValueExpression="ValueExpression"
                  id="@Id"
-                 class="arc-dropdown @(GetStyle())"
+                 class=@($"arc-dropdown {GetStyle()}")
                  disabled="@Disabled"
     @onblur="HandleOnBlurAsync">
         @if (DefaultText.HasValue())

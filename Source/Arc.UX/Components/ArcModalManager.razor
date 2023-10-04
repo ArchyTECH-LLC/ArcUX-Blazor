@@ -1,0 +1,17 @@
+﻿
+@inject IModalService ModalManager
+
+<div id="modals">
+    @foreach (var modal in ModalManager.Modals)
+    {
+        @modal.Fragment
+    }
+</div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        ModalManager.OnModalChanged += async reference => await InvokeAsync(StateHasChanged);
+    }
+}

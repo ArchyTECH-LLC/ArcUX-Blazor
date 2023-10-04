@@ -1,0 +1,104 @@
+﻿@using Microsoft.JSInterop
+@using Arc.UX.Services
+
+@inject IModalService ModalService
+@inject IJSRuntime JsRuntime;
+
+@if (ButtonText.HasValue())
+{
+    <button class="btn btn-primary" data-toggle="modal" data-target="#@Id" @onclick="Show">@ButtonText</button>
+}
+
+<div id="@Id" class="modal fade show" tabindex="-1" role="dialog" data-bs-keyboard="false" style="display:block; backdrop-filter: brightness(0.5);" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" width="">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@((MarkupString)Title)</h5>
+                @*                <button type="button" class="close" aria-label="Close" @onclick="() => Close()">
+                <span aria-hidden="true">&times;</span>
+                </button>*@
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid ">
+
+                    <ArcResultHandler Result="ErrorResult"/>
+
+                    <CascadingValue Value="this">
+                        @Body
+                    </CascadingValue>
+                </div>
+            </div>
+            @if (Footer != null)
+            {
+                <div class="modal-footer">
+                    @Footer
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender) Show();
+    }
+
+
+    [Parameter]
+    public string Id { get; set; } = $"m{Guid.NewGuid()}";
+
+    [Parameter]
+    public bool Showing { get; set; }
+
+    [Parameter]
+    public string? ButtonText { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public RenderFragment? Body { get; set; }
+
+    [Parameter]
+    public RenderFragment? Footer { get; set; }
+
+    [Parameter]
+    public TaskCompletionSource<Result> Result { get; set; }
+
+
+    protected Result? ErrorResult { get; set; }
+
+    public void SetTitle(string title)
+    {
+        Title = title;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Show()
+    {
+        Showing = true;
+        JsRuntime.InvokeVoidAsync("showModal", Id);
+
+    }
+
+    public void HandleResult(Result result)
+    {
+        if (result.Success) Close(result);
+        else
+        {
+            ErrorResult = result;
+        }
+    }
+
+    public void Close(Result result = null)
+    {
+        JsRuntime.InvokeVoidAsync("closeModal", Id);
+
+        Showing = false;
+        ModalService.Dismiss(this);
+        Result.TrySetResult(result);
+    }
+
+}

@@ -1,5 +1,5 @@
-﻿.dpi-multiselect.is-invalid,
-.dpi-multiselect.is-valid {
+﻿.arc-multiselect.is-invalid,
+.arc-multiselect.is-valid {
     border: 1px solid #ced4da;
     background-image: none;
 }
