@@ -13,7 +13,7 @@
             <td class="arc-message-box-content">
 
                 <div class="arc-message-box-message">
-                    @if (string.IsNullOrEmpty(Title) == false)
+                    @if (Title.HasValue())
                     {
                         <div class="arc-message-box-title">
                             @Title
