@@ -1,0 +1,52 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+
+
+<label class="arc-upload @GetStyles() upload" disabled="@Disabled">
+    <ArcIcon Name="@UploadIconName"></ArcIcon>
+    @ChildContent
+    <InputFile OnChange="OnFileUploaded"></InputFile>
+</label>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? UploadIconName { get; set; }
+
+    [Parameter]
+    public ButtonType Type { get; set; } = ButtonType.Button;
+
+    [Parameter]
+    public ElementStyle Style { get; set; } = ElementStyle.Primary;
+
+    [Parameter]
+    public ElementSize Size { get; set; } = ElementSize.Default;
+
+    [Parameter]
+    public bool Outline { get; set; } = true;
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    private string GetStyles()
+    {
+        var outline =
+            Outline 
+                ? "outline-"
+                : string.Empty;
+
+        var style = $"btn btn-{outline}{Style.ToString().ToLower()} ";
+
+
+        if (Size == ElementSize.Small) style += $"btn-sm ";
+        if (Size == ElementSize.Large) style += $"btn-lg ";
+
+
+        return style;
+    }
+
+    [Parameter]
+    public EventCallback<InputFileChangeEventArgs> OnFileUploaded { get; set; }
+
+}
