@@ -1,5 +1,9 @@
-﻿<h3>ArcColumn</h3>
+﻿<div class="arc-column">
+    @Body
+</div>
+
 
 @code {
-
+    [Parameter]
+    public RenderFragment? Body { get; set; }
 }

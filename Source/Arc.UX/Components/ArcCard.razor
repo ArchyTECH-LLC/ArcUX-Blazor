@@ -1,25 +1,23 @@
-﻿@inherits ArcComponent
+﻿@inherits ArcElement
 
-@if (Visible)
-{
-    <div class="arc-card">
-        <h5 class="arc-card-title @CssClass">
-            @if (TitleIcon.HasValue())
-            {
-                <ArcIcon IconName="TitleIcon" Design="TitleIconDesign" Animation="TitleIconAnimation" />
-            }
-            @Title
-        </h5>
-        <div class="arc-card-body">
-            <h6 class="card-subtitle mb-2 text-muted">
-                @Message
-            </h6>
-            <div class="dropdown-divider pt-2 mb-2"></div>
-            @ChildContent
 
-        </div>
+<ArcComponent Component=@this>
+    <h5 class="arc-card-title @CssClasses">
+        @if (TitleIcon.HasValue())
+        {
+            <ArcIcon IconName="TitleIcon" Design="TitleIconDesign" Animation="TitleIconAnimation" />
+        }
+        @Title
+    </h5>
+    <div class="arc-card-body">
+        <h6 class="card-subtitle mb-2 text-muted">
+            @Message
+        </h6>
+        <div class="dropdown-divider pt-2 mb-2"></div>
+        @ChildContent
+
     </div>
-}
+</ArcComponent>
 
 @code {
     [Parameter]
@@ -39,6 +37,5 @@
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-
 
 }

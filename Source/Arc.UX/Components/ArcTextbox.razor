@@ -1,24 +1,19 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms
-@inherits InputBase<string>
+@inherits ArcInputBase<string>
 
-@if (Visible)
-{
+<ArcComponent Component="this">
     <input id="@Id" class="arc-textbox form-control @CssClass"
-           placeholder="@Placeholder"
-           @bind-Value="@CurrentValue"
-           @bind-Value:event="@BindValueEvent"
-           disabled="@Disabled"
-           @onblur="HandleOnBlur" />
-
-}
+               placeholder="@Placeholder"
+               @bind-Value="@CurrentValue"
+               @bind-Value:event="@BindValueEvent"
+               disabled="@Disabled"
+               @onblur="HandleOnBlur" />
+</ArcComponent>
 
 @code {
     [Parameter]
     public string? Id { get; set; }
-
-    [Parameter]
-    public bool Visible { get; set; } = true;
-
+    
     [Parameter]
     public bool Disabled { get; set; }
 

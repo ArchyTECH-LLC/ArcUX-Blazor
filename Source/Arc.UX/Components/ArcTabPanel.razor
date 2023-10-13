@@ -1,25 +1,25 @@
-﻿@inherits ArcComponent
+﻿@inherits ArcElement
 
-@if (Visible)
-{
-    <div class="arc-tab-panel @CssClass">
+<ArcComponent Component="this" Style="@Style">
+    <CascadingValue Value="this">
+        <ul class="nav nav-tabs">
+            @ChildContent
+        </ul>
+    </CascadingValue>
 
-        <CascadingValue Value="this">
-            <ul class="nav nav-tabs">
-                @ChildContent
-            </ul>
-        </CascadingValue>
-
-        <div class="arc-tab-content">
-            @SelectedTab?.ChildContent
-        </div>
+    <div class="arc-tab-content">
+        @SelectedTab?.ChildContent
     </div>
-}
+</ArcComponent>
+
 
 @code {
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public ElementStyle Style { get; set; } = ElementStyle.Default;
 
     public List<ArcTab> Tabs { get; } = new();
 

@@ -1,7 +1,7 @@
 ﻿@using Arc.UX.Extensions
 @if (Component?.Visible == true)
 {
-    <div class="arc-@ComponentName() @(Component?.CssClass) @(Component?.Style?.ToLoweredCssClass())">
+    <div class="arc-@ComponentName() @(Component?.CssClasses) @(Style?.ToLoweredCssClass())">
         @Body
     </div>
 }
@@ -9,7 +9,10 @@
 @code {
 
     [Parameter]
-    public ArcComponent? Component { get; set; }
+    public IArcComponent? Component { get; set; }
+
+    [Parameter]
+    public ElementStyle? Style{ get; set; }
 
     [Parameter]
     public RenderFragment? Body { get; set; }

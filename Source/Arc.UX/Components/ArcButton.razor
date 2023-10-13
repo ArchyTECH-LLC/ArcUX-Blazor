@@ -1,21 +1,19 @@
 ﻿
 @inject NavigationManager NavigationManager;
+@inherits ArcElement
 
-
-@if (Visible)
-{
+<ArcComponent Component="this" Style=@Style>
     <button 
-        class="@(GetStyles())" 
-        type="@Type"
-        disabled="@(Disabled)"
-        title="@Title"
-        @onclick="HandleClick">
+        type=@Type
+        disabled=@Disabled
+        title=@Title
+            @onclick="HandleClick">
 
         @if (Icon.HasValue())
         {
             @if (ChildContent != null)
             {
-                <ArcIcon IconName=@Icon Design=@IconDesign Animation=@IconAnimation Style=@null CssClass="me-2" />
+                <ArcIcon IconName=@Icon Design=@IconDesign Animation=@IconAnimation Style=@null CssClasses="me-2" />
             }
             else
             {
@@ -23,8 +21,29 @@
             }
         }
         @ChildContent
-    </button>
-}
+    </button> 
+
+    @*  <button class="@(GetStyles())"
+            type="@Type"
+            disabled="@(Disabled)"
+            title="@Title"
+            @onclick="HandleClick">
+
+        @if (Icon.HasValue())
+        {
+            @if (ChildContent != null)
+            {
+                <ArcIcon IconName=@Icon Design=@IconDesign Animation=@IconAnimation Style=@null CssClasses="me-2" />
+            }
+            else
+            {
+                <ArcIcon IconName=@Icon Design=@IconDesign Animation=@IconAnimation Style=@null />
+            }
+        }
+        @ChildContent
+    </button> *@
+</ArcComponent>
+
 
 @code {
     [Parameter]

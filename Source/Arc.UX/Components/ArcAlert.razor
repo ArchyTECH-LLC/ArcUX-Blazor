@@ -1,11 +1,11 @@
 ﻿@using Arc.UX.Styles
-@inherits ArcComponent
+@inherits ArcElement
 @* @inject IComponentStyleProvider ComponentStyleProvider *@
 
 
-<ArcComponentWrapper Component="this">
+<ArcComponent Component="this" Style=@Style>
     @ChildContent
-</ArcComponentWrapper>
+</ArcComponent>
 
 @* @if (Visible)
 {
