@@ -4,13 +4,12 @@
 @using System.Linq.Expressions
 
 @typeparam TValue
-@inherits InputBase<TValue>
+@inherits ArcInputBase<TValue>
 
-<div class="arc-autocomplete @CssClass @Css" style="position: relative">
 
+<ArcComponent Component="this">
     <InputText placeholder="@DefaultText"
                id="@Id"
-               class="form-select arc-dropdown"
                disabled="@Disabled"
                @bind-Value="Text"
                @oninput="OnTextChange"
@@ -30,9 +29,38 @@
             }
         </div>
     }
+</ArcComponent>
+
+@* 
+<div class="arc-autocomplete @CssClass @CssClasses" style="position: relative">
+    <InputText placeholder="@DefaultText"
+               id="@Id"
+               class="form-select arc-dropdown"
+               disabled="@Disabled"
+    @bind-Value="Text"
+    @oninput="OnTextChange"
+    @onfocus="OnFocus"
+    @onkeydown="OnKeyPress"
+    @onblur="OnBlur" />
+
+    @if (Show)
+    {
+        <div class="dropdown-menu show" x-placement="top-start" style="position: absolute; max-height: 300px; overflow-y: auto">
+
+            @for (int i = 0; i < FilteredItems.Count; i++)
+            {
+                var index = i;
+                var item = FilteredItems[index];
+                <a class="dropdown-item @(Equals(FocusedItem, item) ? "focused" : "")" @onclick="() =>  SelectItem(item, index)">@(ItemText(item))</a>
+            }
+        </div>
+    }
 </div>
+ *@
+
 
 @code {
+
     [Parameter]
     public string? Id { get; set; }
 
@@ -59,10 +87,7 @@
 
     [Parameter]
     public string? Text { get; set; }
-
-    [Parameter]
-    public string? Css { get; set; }
-
+    
     [Parameter]
     public EventCallback<string> TextChanged { get; set; }
 

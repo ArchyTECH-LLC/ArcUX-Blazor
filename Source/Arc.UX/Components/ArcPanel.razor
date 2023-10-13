@@ -1,9 +1,9 @@
-﻿@inherits ArcComponent
+﻿@inherits ArcElement
 
 @if (Visible)
 {
 
-    <div class="arc-panel card my-3 @CssClass">
+    <div class="arc-panel card my-3 @CssClasses">
         @if (Header != null)
         {
             <div class="card-header">
@@ -28,7 +28,6 @@
 }
 
 @code {
-
 
     [Parameter]
     public RenderFragment? Header { get; set; }

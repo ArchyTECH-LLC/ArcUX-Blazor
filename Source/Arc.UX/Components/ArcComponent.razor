@@ -1,9 +1,30 @@
-﻿
+﻿@using Arc.UX.Extensions
+@if (Component?.Visible == true)
+{
+    <div class="arc-@ComponentName() @(Component?.CssClasses) @(Style?.ToLoweredCssClass())">
+        @Body
+    </div>
+}
 
 @code {
-    [Parameter]
-    public bool Visible { get; set; } = true;
 
     [Parameter]
-    public string? CssClass { get; set; }
+    public IArcComponent? Component { get; set; }
+
+    [Parameter]
+    public ElementStyle? Style{ get; set; }
+
+    [Parameter]
+    public RenderFragment? Body { get; set; }
+
+
+    private string ComponentName()
+    {
+        var name = Component?.ComponentName
+                   ?? Component?.GetType()?.Name 
+                   ?? "unknown";
+
+        return name.ToLower();
+    }
+
 }

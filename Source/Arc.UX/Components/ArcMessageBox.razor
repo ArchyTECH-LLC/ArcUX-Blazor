@@ -1,11 +1,8 @@
-﻿@inherits ArcComponent
+﻿@inherits ArcElement
 @using Arc.UX.Styles
 
-
-@inject IComponentStyleProvider ComponentStyleProvider
-@if (Visible)
-{
-    <table class="arc-message-box @ComponentStyleProvider.Style(Style) @CssClass">
+<ArcComponent Component="this" Style=@Style> 
+    <table>
         <tr>
             <td class="arc-message-box-banner">
                 <ArcIcon Name=@IconName Design=@IconDesign Animation=@IconAnimation />
@@ -25,10 +22,10 @@
             </td>
         </tr>
     </table>
-}
+</ArcComponent>
+
 
 @code {
-
     [Parameter]
     public string? Title { get; set; }
 
