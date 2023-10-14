@@ -1,0 +1,59 @@
+﻿<link type="text/css" rel="stylesheet" href="libs/bootstrap/@(VersionOrDefault)/css/bootstrap.css" />
+
+<InputSelect @bind-Value="Provider">
+    @foreach (var version in Enum.GetValues<StyleProviderType>())
+    {
+        <option value="@version">@version</option>
+    }
+
+</InputSelect>
+
+<InputSelect @bind-Value="Version">
+    @foreach (var version in GetStyleProviderVersions())
+    {
+        <option value="@version">@version</option>
+    }
+
+</InputSelect>
+
+@code {
+    [Parameter]
+    public StyleProviderType Provider { get; set; } = StyleProviderType.Bootstrap;
+
+    [Parameter]
+    public EventCallback<StyleProviderType> ProviderChanged { get; set; }
+
+    [Parameter]
+    public string Version { get; set; } = "5.1";
+
+    [Parameter]
+    public EventCallback<string?> VersionChanged { get; set; }
+
+    public string VersionOrDefault => Version ?? GetStyleProviderVersions().FirstOrDefault() ?? "";
+
+    public string CssPath()
+    {
+        var version = Version ?? GetStyleProviderVersions().First();
+
+        return Provider switch
+        {
+            StyleProviderType.Bootstrap => $"~/libs/bootstrap/{version}",
+
+            _ => string.Empty
+            };
+    }
+
+
+    public List<string> GetStyleProviderVersions()
+    {
+        return Provider switch
+        {
+            StyleProviderType.Bootstrap => new List<string>
+            {
+                 "5.1", "3.3.7"
+            },
+
+            _ => new List<string>()
+        };
+    }
+}

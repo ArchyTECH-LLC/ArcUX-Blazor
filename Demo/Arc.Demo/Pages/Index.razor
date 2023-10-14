@@ -3,7 +3,28 @@
 <PageTitle>Index</PageTitle>
 
 
+<StyleProvider @bind-Provider="StyleProvider" @bind-Version="StyleProviderVersion"/>
 
+<table class="table">
+    <thead>
+    <tr>
+        <th>@StyleProvider @StyleProviderVersion </th>
+        <th>Arc UX</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            <button class="btn btn-primary">Primary</button>
+        </td>
+        <td>
+            <ArcButton Style="ElementStyle.Primary">Primary</ArcButton>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+@* 
 <ArcAlert Style=@ElementStyle.Error>
     TODO
 </ArcAlert>
@@ -11,4 +32,12 @@
 
 <ArcMessageBox Title="Error" Style=@ElementStyle.Error IconName="pencil">
     TODO
-</ArcMessageBox>
+</ArcMessageBox> 
+*@
+
+@code
+{
+    public StyleProviderType StyleProvider { get; set; }
+    public string StyleProviderVersion { get; set; }
+
+}
