@@ -7,13 +7,23 @@
     --arc-color-primary-bg: 51, 122, 183;
     --arc-color-primary-text: var(--arc-color-text-white);
     --arc-color-primary-border: 46, 109, 164;
+    --arc-color-primary-shadow: var(--arc-color-default-shadow);
     --arc-color-default-bg: 255 255 255;
     --arc-color-default-text: var(--arc-color-text-dark);
     --arc-color-default-border: 204, 204, 204;
-    --arc-color-error-bg: 187, 45, 59;
+    --arc-color-default-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #000000;
+    --arc-color-error-bg: 217, 83, 79;
     --arc-color-error-text: var(--arc-color-text-white);
-    --arc-color-error-border: 176, 42, 55;
-    --arc-color-success-bg: 237 248 247;
+    --arc-color-error-border: 212, 63, 58;
+    --arc-color-error-shadow: var(--arc-color-default-shadow);
+    --arc-color-warning-bg: 240, 173, 78;
+    --arc-color-warning-text: var(--arc-color-text-white);
+    --arc-color-warning-border: 238, 162, 54;
+    --arc-color-warning-shadow: var(--arc-color-default-shadow);
+    --arc-color-success-bg: 92, 184, 92;
     --arc-color-success-text: var(--arc-color-text-white);
-    --arc-color-success-border: 237 248 247;
+    --arc-color-success-border: 76, 174, 76;
+    --arc-color-success-shadow: var(--arc-color-default-shadow);
+    --arc-default-padding: 6px 12px;
+    --arc-default-radius: 4px;
 }

@@ -2,23 +2,41 @@
 .arc-button {
     color: rgb(var(--arc-color-default-text));
     background-color: rgb(var(--arc-color-default-bg));
-    border-color: rgb(var(--arc-color-default-border));
+    padding: var(--arc-default-padding);
+    white-space: nowrap;
+    vertical-align: middle;
+    border: 1px solid rgb(var(--arc-color-default-border));
+    border-radius: var(--arc-default-radius)
 }
 
-    .arc-button.primary {
-        color: rgb(var(--arc-color-primary-text));
-        background-color: rgb(var(--arc-color-primary-bg));
-        border-color: rgb(var(--arc-color-primary-border));
-    }
+.arc-button.primary {
+    color: rgb(var(--arc-color-primary-text));
+    background-color: rgb(var(--arc-color-primary-bg));
+    border-color: rgb(var(--arc-color-primary-border));
+    --arc-color-default-shadow: var(--arc-color-primary-shadow);
+}
 
-    .arc-button.error {
-        color: rgb(var(--arc-color-error-text));
-        background-color: rgb(var(--arc-color-error-bg));
-        border-color: rgb(var(--arc-color-error-border));
-    }
+.arc-button.error {
+    color: rgb(var(--arc-color-error-text));
+    background-color: rgb(var(--arc-color-error-bg));
+    border-color: rgb(var(--arc-color-error-border));
+    --arc-color-default-shadow: var(--arc-color-error-shadow);
+}
 
-    .arc-button.success {
-        color: rgb(var(--arc-color-success-text));
-        background-color: rgb(var(--arc-color-success-bg));
-        border-color: rgb(var(--arc-color-success-border));
-    }
+.arc-button.success {
+    color: rgb(var(--arc-color-success-text));
+    background-color: rgb(var(--arc-color-success-bg));
+    border-color: rgb(var(--arc-color-success-border));
+    --arc-color-default-shadow: var(--arc-color-success-shadow);
+}
+
+.arc-button.warning {
+    color: rgb(var(--arc-color-warning-text));
+    background-color: rgb(var(--arc-color-warning-bg));
+    border-color: rgb(var(--arc-color-warning-border));
+    --arc-color-default-shadow: var(--arc-color-warning-shadow);
+}
+
+.arc-button:focus, .arc-button.focus {
+    box-shadow: var(--arc-color-default-shadow);
+}
