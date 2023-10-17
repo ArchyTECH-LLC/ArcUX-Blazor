@@ -1,9 +1,11 @@
 ﻿
 @inject NavigationManager NavigationManager;
+@using Arc.UX.Extensions
 @inherits ArcElement
 
 <ArcComponent Component="this" Style=@Style>
     <button 
+        class="arc-button @(Style.ToLoweredCssClass())"
         type=@Type
         disabled=@Disabled
         title=@Title
