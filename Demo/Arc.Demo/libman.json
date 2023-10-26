@@ -6,9 +6,15 @@
       "library": "font-awesome@6.1.1",
       "destination": "wwwroot/libs/font-awesome/"
     },
+
     {
       "library": "bootstrap@5.1.0",
-      "destination": "wwwroot/libs/bootstrap/"
+      "destination": "wwwroot/libs/bootstrap/5.1"
+    },
+
+    {
+      "library": "twitter-bootstrap@3.3.7",
+      "destination": "wwwroot/libs/bootstrap/3.3.7"
     }
   ]
 }

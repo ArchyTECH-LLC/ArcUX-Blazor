@@ -1,9 +1,11 @@
 ﻿
 @inject NavigationManager NavigationManager;
+@using Arc.UX.Extensions
 @inherits ArcElement
 
 <ArcComponent Component="this" Style=@Style>
     <button 
+        class="arc-button @(Style.ToLoweredCssClass())"
         type=@Type
         disabled=@Disabled
         title=@Title
@@ -47,7 +49,7 @@
 
 @code {
     [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    public RenderFragment ChildContent { get; set; }
 
     [Parameter]
     public string? Icon { get; set; }
@@ -76,8 +78,6 @@
     [Parameter]
     public bool Block { get; set; }
 
-    [Parameter]
-    public bool Visible { get; set; } = true;
 
     [Parameter]
     [Obsolete("The default style is now outline, please use the Solid property make solid buttons")]

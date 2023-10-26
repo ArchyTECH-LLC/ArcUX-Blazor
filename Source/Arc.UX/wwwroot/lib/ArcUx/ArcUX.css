@@ -1,0 +1,24 @@
+﻿
+.arc-button {
+    color: rgb(var(--arc-color-default-text));
+    background-color: rgb(var(--arc-color-default-bg));
+    border-color: rgb(var(--arc-color-default-border));
+}
+
+    .arc-button.primary {
+        color: rgb(var(--arc-color-primary-text));
+        background-color: rgb(var(--arc-color-primary-bg));
+        border-color: rgb(var(--arc-color-primary-border));
+    }
+
+    .arc-button.error {
+        color: rgb(var(--arc-color-error-text));
+        background-color: rgb(var(--arc-color-error-bg));
+        border-color: rgb(var(--arc-color-error-border));
+    }
+
+    .arc-button.success {
+        color: rgb(var(--arc-color-success-text));
+        background-color: rgb(var(--arc-color-success-bg));
+        border-color: rgb(var(--arc-color-success-border));
+    }

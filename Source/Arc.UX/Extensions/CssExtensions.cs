@@ -2,9 +2,9 @@
 
 internal static class CssExtensions
 {
-    public static string? ToLoweredCssClass<T>(this T? obj, string? prefix = "arc-")
+    public static string? ToLoweredCssClass<T>(this T? obj, string? prefix = null)
     {
-        return obj != null ? $"{prefix}{obj}" : null;
+        return obj != null ? $"{prefix}{obj.ToString().ToLower()}" : null;
     }
 
     public static string? ToggleCssClass<T>(this T? obj, string cssClass)

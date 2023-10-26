@@ -2,7 +2,7 @@
 @if (Component?.Visible == true)
 {
     <div class="arc-@ComponentName() @(Component?.CssClasses) @(Style?.ToLoweredCssClass())">
-        @Body
+        @ChildContent
     </div>
 }
 
@@ -15,7 +15,7 @@
     public ElementStyle? Style{ get; set; }
 
     [Parameter]
-    public RenderFragment? Body { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 
 
     private string ComponentName()
