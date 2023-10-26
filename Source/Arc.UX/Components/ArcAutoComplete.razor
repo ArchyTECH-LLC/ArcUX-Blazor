@@ -19,7 +19,9 @@
 
     @if (Show)
     {
-        <div class="dropdown-menu show" x-placement="top-start" style="position: absolute; max-height: 300px; overflow-y: auto">
+        <div class="dropdown-menu show" x-placement="top-start" style="position: absolute; max-height: 300px; overflow-y: auto"
+            @onmousedown="OnMouseDownDropdown"
+            @onmouseup="OnMouseUpDropdown">
 
             @for (int i = 0; i < FilteredItems.Count; i++)
             {
@@ -119,10 +121,20 @@
     private bool IgnoreTextChange { get; set; }
 
     protected bool Show { get; set; }
-
+    protected bool IsDropdownFocused { get; set; }  
     protected override void OnInitialized()
     {
         OnSearch ??= DefaultSearch;
+
+        var index = 0;
+        foreach (var item in Items)
+        {
+            if (ItemValue(item)?.Equals(Value) == true)
+            {
+                await SelectItem(item, index);
+            }
+            index++;
+        }
     }
 
     private async Task OnTextChange(ChangeEventArgs arg)
@@ -263,16 +275,17 @@
 
     private async Task OnBlur(FocusEventArgs obj)
     {
-        await Task.Delay(TimeSpan.FromMilliseconds(200));
+        Thread.Sleep(50);
 
-        if (FocusedIndex >= 0 && FocusedItem != null)
+        if (!IsDropdownFocused)
         {
-            await SelectItem(FocusedItem);
+            if (FocusedIndex >= 0)
+            {
+                await SelectItem(FocusedItem);
+            }
+            Show = false;
+            await FocusLost.InvokeAsync();
         }
-
-        Show = false;
-
-        await FocusLost.InvokeAsync();
     }
 
     private async Task OnFocus(FocusEventArgs obj)
@@ -286,4 +299,13 @@
     }
 
 
+    private void OnMouseDownDropdown()
+    {
+        IsDropdownFocused = true;
+    }
+ 
+    private void OnMouseUpDropdown()
+    {
+        IsDropdownFocused = false;
+    }
 }
