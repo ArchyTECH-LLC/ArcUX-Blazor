@@ -1,0 +1,31 @@
+﻿
+@if (Message != null)
+{
+    <div>
+        @((MarkupString)Message)
+    </div>
+}
+
+<ArcModalFooter>
+    <ArcButton Solid="true" OnClick="() => Modal.Close(Result.Successful(null))" Style="ElementStyle.Danger">
+        Yes
+    </ArcButton>
+
+    <ArcButton OnClick='() => Modal.Close(Result.Failed(null))'>
+        No
+    </ArcButton>
+</ArcModalFooter>
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        Modal.ToggleBody(Message.HasValue());
+    }
+
+    [CascadingParameter]
+    public required ArcModal Modal { get; set; }
+
+    [Parameter]
+    public string? Message { get; set; }
+}

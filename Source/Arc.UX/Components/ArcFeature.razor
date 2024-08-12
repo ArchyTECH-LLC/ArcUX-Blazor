@@ -4,20 +4,48 @@
 }
 else if(DisabledMessage.HasValue())
 {
+    @if (Icon == null)
+    {
     <ArcAlert Style="@ElementStyle.Info">
-        @DisabledMessage
+            @((MarkupString)Message!)
     </ArcAlert>
+    }
+    else
+    {
+        <ArcMessageBox IconName="@Icon" Style="@Style" IconDesign="@IconDesign" IconAnimation="@IconAnimation">
+            @((MarkupString)Message!)
+        </ArcMessageBox>
+    }
 }
 
+@inject IHostEnvironment HostEnvironment
 @code {
 
+
+    public string? Message => HostEnvironment.IsDevelopment() || HostEnvironment.IsEnvironment("Local") ?
+        DeveloperMessage ?? DisabledMessage : DisabledMessage;
     [Parameter]
     public bool Enabled { get; set; }
 
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public ElementStyle Style { get; set; } = ElementStyle.Info;
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public FontAwesomeDesign IconDesign { get; set; } = FontAwesomeDesign.Solid;
+
+    [Parameter]
+    public FontAwesomeAnimation? IconAnimation { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
     
     [Parameter]
-    public string DisabledMessage { get; set; }
+    public string? DisabledMessage { get; set; }
+
+    [Parameter]
+    public string? DeveloperMessage { get; set; }
 
 }

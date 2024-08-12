@@ -1,7 +1,7 @@
 ﻿@inherits ArcElement
 
 
-<ArcComponent Component=@this>
+<ArcComponent Component=@this Visible="Visible">
     <h5 class="arc-card-title @CssClasses">
         @if (TitleIcon.HasValue())
         {
@@ -13,7 +13,11 @@
         <h6 class="card-subtitle mb-2 text-muted">
             @Message
         </h6>
-        <div class="dropdown-divider pt-2 mb-2"></div>
+        
+        @if (Title.HasValue() || Message.HasValue())
+        {
+            <div class="dropdown-divider pt-2 mb-2"></div>
+        }
         @ChildContent
 
     </div>

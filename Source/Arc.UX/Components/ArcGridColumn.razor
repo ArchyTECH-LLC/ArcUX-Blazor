@@ -1,4 +1,4 @@
-﻿<div class="arc-column">
+﻿<div class="arc-column col@(SpanSuffix) @(DisplayCss) @(OffsetCss) @(InputAligned?"input-aligned" : "") @Css">
     @Body
 </div>
 
@@ -6,4 +6,79 @@
 @code {
     [Parameter]
     public RenderFragment? Body { get; set; }
+    [Parameter]
+    public int? Span { get; set; }
+
+    [Parameter]
+    public int? ExtraSmallDisplayAndBiggerSpan { get; set; }
+    [Parameter]
+    public int? SmallDisplayAndBiggerSpan { get; set; }
+    [Parameter]
+    public int? MediumDisplayAndBiggerSpan { get; set; }
+    [Parameter]
+    public int? LargeDisplayAndBiggerSpan { get; set; }
+    [Parameter]
+    public int? ExtraLargeDisplayAndBiggerSpan { get; set; }
+
+    [Parameter]
+    public int? OffsetSpan { get; set; }
+
+    [Parameter]
+    public string? Css { get; set; }
+
+    [Parameter]
+    public bool Visible { get; set; } = true;
+
+    [Parameter]
+    public bool InputAligned { get; set; }
+
+
+
+    public string? SpanSuffix
+    {
+        get
+        {
+            if (Span == null || Span <= 1) return null;
+
+            if (Span > 12) return "-12";
+            return $"-{Span}";
+        }
+    }
+
+    protected string? DisplayCss
+    {
+        get
+        {
+            var classes = "";
+
+            if (ExtraSmallDisplayAndBiggerSpan is >= 1 and <= 12) classes += $"col-xs-{ExtraSmallDisplayAndBiggerSpan} ";
+            if (SmallDisplayAndBiggerSpan is >= 1 and <= 12) classes += $"col-sm-{SmallDisplayAndBiggerSpan} ";
+            if (MediumDisplayAndBiggerSpan is >= 1 and <= 12) classes += $"col-md-{MediumDisplayAndBiggerSpan} ";
+            if (LargeDisplayAndBiggerSpan is >= 1 and <= 12) classes += $"col-lg-{LargeDisplayAndBiggerSpan} ";
+            if (ExtraLargeDisplayAndBiggerSpan is >= 1 and <= 12) classes += $"col-lg-{ExtraLargeDisplayAndBiggerSpan} ";
+
+            return classes;
+
+        }
+    }
+
+    protected string? OffsetCss
+    {
+        get
+        {
+            var classes = "";
+
+            if (OffsetSpan is >= 1 and <= 12)
+            {
+                if (Span is >= 1 and <= 12) classes += $"offset-{OffsetSpan} ";
+                if (ExtraSmallDisplayAndBiggerSpan is >= 1 and <= 12) classes += $"offset-xs-{OffsetSpan} ";
+                if (SmallDisplayAndBiggerSpan is >= 1 and <= 12) classes += $"offset-sm-{OffsetSpan} ";
+                if (MediumDisplayAndBiggerSpan is >= 1 and <= 12) classes += $"offset-md-{OffsetSpan} ";
+                if (LargeDisplayAndBiggerSpan is >= 1 and <= 12) classes += $"offset-lg-{OffsetSpan} ";
+                if (ExtraLargeDisplayAndBiggerSpan is >= 1 and <= 12) classes += $"offset-lg-{OffsetSpan} ";
+            }
+
+            return classes;
+        }
+    }
 }

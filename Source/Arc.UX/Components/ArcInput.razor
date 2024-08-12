@@ -1,0 +1,22 @@
+﻿@inherits ArcComponent
+
+
+@if (Label.HasValue())
+{
+    <label class="form-label">
+        @Label
+    </label>
+}
+@Component
+@if (Validate)
+{
+    <DpiValidationMessage For="@ValueExpression" />
+}
+
+@code {
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public bool Validate { get; set; }
+}

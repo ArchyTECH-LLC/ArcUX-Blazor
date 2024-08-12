@@ -2,8 +2,9 @@
 
 public enum ElementSize
 {
-    //ExtraSmall,
+    ExtraSmall,
     Small,
     Default,
-    Large
+    Large,
+    ExtraLarge
 }

@@ -1,11 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms
 
-@inherits InputBase<List<TValue>>
+@inherits ArcInputBase<List<TValue>>
 @typeparam TValue
 @typeparam TItem
 
 
-<div class="form-control arc-multiselect @(Disabled ? "disabled" : "") @CssClass">
+<ArcInput Component="this" >
+
+<div class="form-control  @(Disabled ? "disabled" : "") @CssClass">
     @foreach (var selectedItem in SelectedItems)
     {
         <span class="badge rounded-pill bg-primary m-1 p-2 fs-6" @onclick="() => Unselect(selectedItem)">
@@ -28,6 +30,7 @@
 
 </div>
 
+</ArcInput>
 
 @code {
     [Parameter]

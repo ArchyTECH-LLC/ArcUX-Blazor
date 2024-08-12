@@ -1,5 +1,4 @@
 ﻿@using Microsoft.JSInterop
-@using Arc.UX.Services
 
 @inject IModalService ModalService
 @inject IJSRuntime JsRuntime;
@@ -9,8 +8,9 @@
     <button class="btn btn-primary" data-toggle="modal" data-target="#@Id" @onclick="Show">@ButtonText</button>
 }
 
+<CascadingValue Value="this">
 <div id="@Id" class="modal fade show" tabindex="-1" role="dialog" data-bs-keyboard="false" style="display:block; backdrop-filter: brightness(0.5);" data-bs-backdrop="static">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" width="">
+    <div class="modal-dialog modal-@(Size.DisplayName()) modal-dialog-centered modal-dialog-scrollable" width="">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">@((MarkupString)Title)</h5>
@@ -18,14 +18,13 @@
                 <span aria-hidden="true">&times;</span>
                 </button>*@
             </div>
-            <div class="modal-body">
+            <div class="modal-body @(ShowModalBody ? "" : "hide")">
                 <div class="container-fluid ">
 
                     <ArcResultHandler Result="ErrorResult"/>
 
-                    <CascadingValue Value="this">
+
                         @Body
-                    </CascadingValue>
                 </div>
             </div>
             @if (Footer != null)
@@ -37,6 +36,7 @@
         </div>
     </div>
 </div>
+</CascadingValue>
 
 @code {
 
@@ -59,6 +59,9 @@
     public string? Title { get; set; }
 
     [Parameter]
+    public ElementSize Size { get; set; }
+    
+    [Parameter]
     public RenderFragment? Body { get; set; }
 
     [Parameter]
@@ -67,7 +70,7 @@
     [Parameter]
     public TaskCompletionSource<Result> Result { get; set; }
 
-
+    protected bool ShowModalBody { get; private set; } = true;
     protected Result? ErrorResult { get; set; }
 
     public void SetTitle(string title)
@@ -83,6 +86,17 @@
 
     }
 
+   public void ToggleBody(bool show)
+    {
+        ShowModalBody = show;
+        StateHasChanged();
+    }
+
+    public void SetFooter(RenderFragment? footer)
+    {
+        Footer = footer;
+        StateHasChanged();
+    }
     public void HandleResult(Result result)
     {
         if (result.Success) Close(result);

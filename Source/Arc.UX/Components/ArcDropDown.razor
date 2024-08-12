@@ -7,6 +7,13 @@
 
 @if (Visible)
 {
+
+    @if (Label.HasValue())
+    {
+        <label class="form-label">
+            @Label
+        </label>
+    }
     <InputSelect Value="Value"
                  ValueChanged="(async (TValue v) => {
                 await ValueChanged.InvokeAsync(v);
@@ -26,6 +33,12 @@
             <option value="@StringValue(item)" selected="@(StringValue(item) == CurrentValue?.ToString())">@ItemText(item)</option>
         }
     </InputSelect>
+
+
+    @if (Validate)
+    {
+        <ArcValidationMessage For="@ValueExpression" />
+    }
 }
 
 @code {
@@ -70,8 +83,10 @@
     {
         var classes = "form-control form-select ";
         classes += Value == null ? "is-null " : "has-value ";
-        if (Size == ElementSize.Large) classes += "btn-lg";
+        if (Size == ElementSize.ExtraSmall) classes += "btn-xs";
         if (Size == ElementSize.Small) classes += "btn-sm";
+        if (Size == ElementSize.Large) classes += "btn-lg";
+        if (Size == ElementSize.ExtraLarge) classes += "btn-xl";
 
         return $"{classes} {CssClass}";
     }
@@ -92,7 +107,7 @@
     public async Task Clear()
     {
         CurrentValue = default;
-        EditContext.NotifyFieldChanged(FieldIdentifier);
+        EditContext?.NotifyFieldChanged(FieldIdentifier);
         await InvokeAsync(StateHasChanged);
     }
 
@@ -107,7 +122,7 @@
     {
         if (string.IsNullOrEmpty(CurrentValue?.ToString()))
         {
-            EditContext.NotifyFieldChanged(FieldIdentifier);
+            EditContext?.NotifyFieldChanged(FieldIdentifier);
         }
 
         await FocusLost.InvokeAsync();

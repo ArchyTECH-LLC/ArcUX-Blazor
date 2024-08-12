@@ -9,6 +9,9 @@
 @code {
 
     [Parameter]
+    public bool Visible { get; set; } = true;
+
+    [Parameter]
     public IArcComponent? Component { get; set; }
 
     [Parameter]

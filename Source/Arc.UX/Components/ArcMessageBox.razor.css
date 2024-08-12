@@ -65,6 +65,14 @@ table.info.arc-message-box {
     background-color: #004085;
 }
 
+.secondary.arc-message-box {
+    border: 1px solid #44A;
+    background-color: #e5e5f5;
+}
+
+.secondary td.arc-message-box-banner {
+    background-color: #44A;
+}
 .success.arc-message-box {
     border: 1px solid #28a745;
     background-color: #eafaee;
@@ -81,4 +89,13 @@ table.info.arc-message-box {
 
 .danger .arc-message-box-banner {
     background-color: #ff6600;
+}
+
+.warning.arc-message-box {
+    border: 1px solid #f0ad4e;
+    background-color: #fff3cd;
+}
+
+.warning .arc-message-box-banner {
+    background-color: #f0ad4e;
 }

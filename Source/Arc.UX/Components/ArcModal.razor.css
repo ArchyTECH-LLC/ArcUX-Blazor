@@ -1,0 +1,9 @@
+﻿.modal-body.hide {
+    display:none;
+}
+
+.modal-body .container-fluid ::deep .modal-footer {
+    margin: 0 -1rem;
+    margin-top: 1rem;
+    padding-bottom: 0;
+}

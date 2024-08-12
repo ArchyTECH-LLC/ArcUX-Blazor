@@ -1,0 +1,13 @@
+﻿@if (ChildContent != null)
+{
+    <div class="modal-footer">
+        @ChildContent
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public RenderFragment? ChildContent {get; set;}
+
+}

@@ -3,7 +3,7 @@
 @using Arc.UX.Extensions
 @inherits ArcElement
 
-<ArcComponent Component="this" Style=@Style>
+<ArcComponent Component="this" Style=@Style Visible="Visible">
     <button 
         class="arc-button @(Style.ToLoweredCssClass())"
         type=@Type
@@ -78,6 +78,8 @@
     [Parameter]
     public bool Block { get; set; }
 
+    [Parameter]
+    public string? CssClass { get; set; }
 
     [Parameter]
     [Obsolete("The default style is now outline, please use the Solid property make solid buttons")]
@@ -95,6 +97,33 @@
 
     [Parameter]
     public bool Disabled { get; set; }
+
+    protected bool IsDisabled => Disabled || (DisableWhileLoading && IsLoading);
+
+    [Parameter]
+    public string LoadingMessage { get; set; } = "Loading...";
+
+    [Parameter]
+    public bool IsLoading { get; set; }
+
+    [Parameter]
+    public bool DisableWhileLoading { get; set; } = true;
+
+
+    // [Parameter]
+    // public ElementStyle LoadingSpinnerStyle { get; set; } = ElementStyle.Primary;
+    
+    // [Parameter]
+    // public ElementSize LoadingSpinnerSize { get; set; } = ElementSize.Default;
+
+    // private string GetSpinnerStyles()
+    // {
+    //     var type = LoadingSpinnerType == BootstrapSpinnerType.Border ? "border" : "grow";
+    //     var css = $"spinner-{type}";
+    //     css = LoadingSpinnerSize is ElementSize.Small or ElementSize.Default ? $"{css} {css}-sm" : css;
+    //     css = $"{css} text-{LoadingSpinnerStyle.ToString().ToLower()}";
+    //     return css;
+    // }
 
     private string GetStyles()
     {
@@ -117,8 +146,10 @@
         var style = $"btn btn-{outline}{Style.ToString().ToLower()} ";
 
 
+        if (Size == ElementSize.ExtraSmall) style += "btn-xs ";
         if (Size == ElementSize.Small) style += "btn-sm ";
         if (Size == ElementSize.Large) style += "btn-lg ";
+        if (Size == ElementSize.ExtraLarge) style += "btn-xl ";
 
         if (Block) style += "w-100 ";
         if (Active)

@@ -1,4 +1,4 @@
-﻿<div class="arc-row">
+﻿<div class="arc-row  @(Css)">
     @Body
 </div>
 
@@ -6,4 +6,7 @@
 @code {
     [Parameter]
     public RenderFragment? Body { get; set; }
+
+    [Parameter]
+    public string? Css { get; set; } = "my-2 ";
 }
