@@ -1,0 +1,192 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using FluentValidation
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Collections
+@using Arc.UX.Services.Validation
+
+
+@implements IDisposable
+
+@if (UseFluentValidation)
+{
+    <FluentValidator Validator="FluentValidator" OnModelStateValidated="NotifyModelValidStateChangedAsync" />
+}
+
+@code {
+    [CascadingParameter]
+    public EditContext? EditContext { get; set; }
+
+    [Parameter]
+    public IValidator? FluentValidator { get; set; }
+
+    [Parameter]
+    public FieldCssClassProvider FieldCssClassProvider { get; set; } = new BootstrapCssProvider();
+
+    [Inject]
+    public required IServiceProvider ServiceProvider { get; set; }
+
+    [Parameter]
+    public Action<ModelValidationStateChangedEventArgs> OnModelValidStateChanged { get; set; } = _ => { };
+
+    public bool? IsValid { get; protected set; }
+
+    [Parameter]
+    public EventCallback<bool> IsValidChanged { get; set; } = EventCallback<bool>.Empty;
+
+    protected bool UseFluentValidation => FluentValidator != null;
+    private EditContext? LastEditContext { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (EditContext == null)
+            throw new Exception("DpiValidator must be a child of an EditForm or EditContext component");
+    }
+
+
+    protected override void OnParametersSet()
+    {
+        // EditForms can switch the EditContext instance during OnParametersSet, but we only want to register 
+        // validation event handlers once.  We also need to deregister disposed edit contexts handlers to avoid
+        // duplicate messages
+        if (LastEditContext == EditContext)
+        {
+            return;
+        }
+
+        DeregisterValidationHandlers(LastEditContext);
+        LastEditContext = EditContext;
+
+        RegisterValidationHandlers(EditContext);
+        EditContext!.SetFieldCssClassProvider(FieldCssClassProvider);
+
+        //Attempt to find the fluent validator for the EditContext.Model
+        FluentValidator ??= ServiceProvider.GetFluentValidationValidator(EditContext!.Model);
+
+        // If we can't find a fluent validator for this model, fallback to using data annotations
+        if (UseFluentValidation == false)
+        {
+            EditContext!.EnableDataAnnotationsValidation(ServiceProvider);
+            SoftValidateDataAnnotations();
+        }
+
+        SyncValidationState();
+    }
+
+    private void RegisterValidationHandlers(EditContext? editContext)
+    {
+        if (editContext == null) return;
+
+        editContext.OnValidationStateChanged += OnValidationStateChanged;
+        editContext.OnFieldChanged += OnFieldChanged;
+    }
+
+    private void DeregisterValidationHandlers(EditContext? editContext)
+    {
+        if (editContext == null) return;
+
+        editContext.OnValidationStateChanged -= OnValidationStateChanged;
+        editContext.OnFieldChanged -= OnFieldChanged;
+    }
+
+    protected void SyncValidationState()
+    {
+        if (EditContext!.GetValidationMessages().Any())
+        {
+            IsValid = false;
+        }
+    }
+
+    protected void OnFieldChanged(object? sender, FieldChangedEventArgs args)
+    {
+        if (UseFluentValidation == false)
+        {
+            SoftValidateDataAnnotations();
+        }
+
+        // Mark the field as validated
+        if (FieldCssClassProvider is BootstrapCssProvider provider)
+        {
+            GetIsFieldEmptyAndIsRequired(args, out var empty, out var required);
+            if (empty && required is null or false)
+                provider.MarkFieldUnvalidated(args.FieldIdentifier);
+            else
+                provider.MarkFieldValidated(args.FieldIdentifier);
+        }
+    }
+
+    private static void GetIsFieldEmptyAndIsRequired(FieldChangedEventArgs args, out bool empty, out bool? required)
+    {
+        empty = false;
+        var fieldName = args.FieldIdentifier.FieldName;
+        var model = args.FieldIdentifier.Model;
+        var modelType = model.GetType();
+        var memberInfo = modelType.GetMember(fieldName).FirstOrDefault();
+        required = memberInfo?.GetCustomAttributes(typeof(RequiredAttribute), true).Any();
+        var member = memberInfo?.GetValue(model);
+
+        empty = member switch
+        {
+            null => true,
+            string memberString => string.IsNullOrEmpty(memberString),
+            ICollection collection => collection.Count <= 0,
+            _ => empty
+        };
+    }
+
+    private void SoftValidateDataAnnotations()
+    {
+        var validationEditContext = new EditContext(EditContext!.Model);
+
+        validationEditContext.EnableDataAnnotationsValidation(ServiceProvider);
+        var messageStore = new ValidationMessageStore(validationEditContext);
+
+        var isValid = validationEditContext.Validate();
+        NotifyModelValidStateChanged(isValid);
+    }
+
+    public void NotifyModelValidStateChanged(bool isValid)
+    {
+        Task.Run(() =>
+            NotifyModelValidStateChangedAsync(new ModelValidationStateChangedEventArgs(isValid))
+                .GetAwaiter()
+                .GetResult());
+    }
+
+
+    /// <summary>
+    /// This method handles fluent validation event changes
+    /// </summary>
+    public async Task NotifyModelValidStateChangedAsync(ModelValidationStateChangedEventArgs args)
+    {
+        var wasValid = IsValid;
+        IsValid = args.IsModelValid;
+        if (wasValid != IsValid)
+        {
+            await IsValidChanged.InvokeAsync(IsValid.Value);
+            OnModelValidStateChanged(args);
+        }
+    }
+    /// <summary>
+    /// This method handles DataAnnotation validation events
+    /// </summary>
+    protected void OnValidationStateChanged(object? sender, ValidationStateChangedEventArgs args)
+    {
+        // If we are using fluent validation, ignore this event and NotifyModelValidStateChanged handle the event
+        if (UseFluentValidation == true) return;
+
+        SyncValidationState();
+        NotifyModelValidStateChanged(IsValid ?? false);
+    }
+
+    public void Dispose()
+    {
+        EditContext!.OnValidationStateChanged -= OnValidationStateChanged;
+        EditContext!.OnFieldChanged -= OnFieldChanged;
+    }
+
+    public bool Validate()
+    {
+        return EditContext!.Validate();
+    }
+
+}

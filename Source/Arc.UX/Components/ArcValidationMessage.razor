@@ -1,0 +1,12 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@typeparam TValue
+@inherits ValidationMessage<TValue>
+
+<div class="invalid-feedback">
+    @RenderBase()
+</div>
+
+@code {
+    RenderFragment RenderBase() => builder => base.BuildRenderTree(builder);
+
+}
